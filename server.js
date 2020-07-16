@@ -63,7 +63,7 @@ async function handleQuerySelect() {
       addRole();
       break;
     case "7":
-      getAlbumData();
+      updateEmployeeRole();
       break;
     default:
       break;
@@ -188,6 +188,39 @@ async function addRole() {
         throw err;
       }
       console.log("Role added!");
+      connection.end();
+    }
+  );
+}
+
+async function updateEmployeeRole() {
+  const userInput = await inquirer.prompt([
+    {
+      type: "input",
+      message: "Enter the employee id you wish to update",
+      name: "employee_id",
+    },
+    {
+      type: "input",
+      message: "Enter new role id",
+      name: "role_id",
+    },
+  ]);
+  connection.query(
+    "UPDATE employee SET ? WHERE ?",
+    [
+      {
+        role_id: userInput.role_id,
+      },
+      {
+        id: userInput.employee_id,
+      },
+    ],
+    (err, res) => {
+      if (err) {
+        throw err;
+      }
+      console.log("Employee role updated!");
       connection.end();
     }
   );
