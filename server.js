@@ -3,19 +3,12 @@ const mysql = require("mysql");
 const cTable = require("console.table");
 const connection = mysql.createConnection({
   host: "localhost",
-
-  // Your port; if not 3306
   port: 3306,
-
-  // Your username
   user: "root",
-
-  // Your password
   password: "password",
   database: "employeeDB",
 });
 
-//FUNCTION TO MAKE IT PRINT IN CONSOLE
 connection.connect((err) => {
   if (err) {
     throw err;
@@ -71,13 +64,16 @@ async function handleQuerySelect() {
 }
 
 function getAllEmployees() {
-  connection.query("SELECT * FROM employee", (err, res) => {
-    if (err) {
-      throw err;
+  connection.query(
+    "SELECT E.id, E.first_name, E.last_name, o.title AS Title, m.first_name AS Manager, p.name AS Department FROM employee AS E LEFT JOIN employee AS m ON E.manager_id = m.id LEFT JOIN role AS o ON E.role_id=o.id LEFT JOIN department AS p ON o.department_id=p.id",
+    (err, res) => {
+      if (err) {
+        throw err;
+      }
+      console.table(res);
+      connection.end();
     }
-    console.table(res);
-    connection.end();
-  });
+  );
 }
 function getAllDepartments() {
   connection.query("SELECT * FROM department", (err, res) => {
