@@ -65,7 +65,7 @@ async function handleQuerySelect() {
 
 function getAllEmployees() {
   connection.query(
-    "SELECT E.id, E.first_name, E.last_name, o.title AS Title, m.first_name AS Manager, p.name AS Department FROM employee AS E LEFT JOIN employee AS m ON E.manager_id = m.id LEFT JOIN role AS o ON E.role_id=o.id LEFT JOIN department AS p ON o.department_id=p.id",
+    "SELECT E.id, E.first_name, E.last_name, role.title AS Title, m.first_name AS Manager, department.name AS Department FROM employee AS E LEFT JOIN employee AS m ON E.manager_id = m.id LEFT JOIN role ON E.role_id=role.id LEFT JOIN department ON role.department_id=department.id",
     (err, res) => {
       if (err) {
         throw err;
