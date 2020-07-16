@@ -54,7 +54,7 @@ async function handleQuerySelect() {
       getAllRoles();
       break;
     case "4":
-      getSong();
+      addEmployee();
       break;
     case "5":
       getAlbumData();
@@ -70,7 +70,7 @@ async function handleQuerySelect() {
   }
 }
 
-async function getAllEmployees() {
+function getAllEmployees() {
   connection.query("SELECT * FROM employee", (err, res) => {
     if (err) {
       throw err;
@@ -79,7 +79,7 @@ async function getAllEmployees() {
     connection.end();
   });
 }
-async function getAllDepartments() {
+function getAllDepartments() {
   connection.query("SELECT * FROM department", (err, res) => {
     if (err) {
       throw err;
@@ -89,7 +89,7 @@ async function getAllDepartments() {
   });
 }
 
-async function getAllRoles() {
+function getAllRoles() {
   connection.query("SELECT * FROM role", (err, res) => {
     if (err) {
       throw err;
@@ -99,37 +99,33 @@ async function getAllRoles() {
   });
 }
 
-//A query which returns all artists who appear within the top 5000 more than once
-function getPredominantArtists() {
-  connection.query(
-    `SELECT artist FROM top5000 GROUP BY artist HAVING COUNT(*) > 1`,
-    (err, res) => {
-      if (err) {
-        throw err;
-      }
-      console.table(res);
-      connection.end();
-    }
-  );
-}
-
-//A query which returns a specific range of data
-async function getSpecificRange() {
+async function addEmployee() {
   const userInput = await inquirer.prompt([
     {
       type: "input",
-      message: "Enter starting position between 1-5000",
-      name: "input1",
+      message: "Enter employee first name",
+      name: "first_name",
     },
     {
       type: "input",
-      message: "Enter ending position between 1-5000",
-      name: "input2",
+      message: "Enter employee last name",
+      name: "last_name",
+    },
+    {
+      type: "input",
+      message: "Enter employee role id",
+      name: "role_id",
+    },
+    {
+      type: "input",
+      message:
+        "Enter employee manager id (Leave null if employee does not have a manager)",
+      name: "manager_id",
     },
   ]);
   connection.query(
-    `SELECT * FROM top5000 WHERE position BETWEEN ? AND ?`,
-    [userInput.input1, userInput.input2],
+    'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
+    [userInput.first_name, userInput.last_name, userInput.role_id, userInput.manager_id],
     (err, res) => {
       if (err) {
         throw err;
