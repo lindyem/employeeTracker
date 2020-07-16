@@ -57,10 +57,10 @@ async function handleQuerySelect() {
       addEmployee();
       break;
     case "5":
-      getAlbumData();
+      addDepartment();
       break;
     case "6":
-      getAlbumData();
+      addRole();
       break;
     case "7":
       getAlbumData();
@@ -124,61 +124,70 @@ async function addEmployee() {
     },
   ]);
   connection.query(
-    'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
-    [userInput.first_name, userInput.last_name, userInput.role_id, userInput.manager_id],
+    "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
+    [
+      userInput.first_name,
+      userInput.last_name,
+      userInput.role_id,
+      userInput.manager_id || null,
+    ],
     (err, res) => {
       if (err) {
         throw err;
       }
-      console.log(res);
+      console.log("Employee added!");
       connection.end();
     }
   );
 }
 
-//A query which returns all data for songs sung by a specific song
-async function getSong() {
+async function addDepartment() {
   const userInput = await inquirer.prompt([
     {
       type: "input",
-      message: "Enter song name",
-      name: "song",
+      message: "Enter department name",
+      name: "department_name",
     },
   ]);
   connection.query(
-    "SELECT * FROM top5000 WHERE ?",
-    {
-      song: userInput.song,
-    },
+    "INSERT INTO department (name) VALUES (?)",
+    [userInput.department_name],
     (err, res) => {
       if (err) {
         throw err;
       }
-      console.log(res);
+      console.log("Department added!");
       connection.end();
     }
   );
 }
 
-//A query which returns all data for an artist on both tables
-async function getAlbumData() {
+async function addRole() {
   const userInput = await inquirer.prompt([
     {
       type: "input",
-      message: "Enter Artist name",
-      name: "album",
+      message: "Enter role title",
+      name: "title",
+    },
+    {
+      type: "input",
+      message: "Enter role salary",
+      name: "salary",
+    },
+    {
+      type: "input",
+      message: "Enter role department id",
+      name: "department_id",
     },
   ]);
   connection.query(
-    "SELECT top5000.artist, top5000.year, topalbums.album, top5000.song FROM top5000 INNER JOIN topalbums ON (top5000.artist = topalbums.artist AND top5000.year = topalbums.year) WHERE top5000.artist = ?;",
-    {
-      song: userInput.album,
-    },
+    "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",
+    [userInput.title, userInput.salary, userInput.department_id],
     (err, res) => {
       if (err) {
         throw err;
       }
-      console.log(res);
+      console.log("Role added!");
       connection.end();
     }
   );
